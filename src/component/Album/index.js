@@ -3,23 +3,42 @@ import SongImage from "../SongImage";
 import AlbumTitle from "../AlbumTitle";
 
 export default function Album({data}) {
+    console.log(data);
     return (
         <>
-            <div style={{ display:"inline-flex", flexDirection:"column", alignItems:"center", gap:4 }}>
-                {data.album.images.map((data, key) => {
-                    return (
-                        <SongImage
-                            src={data.url}
-                            height={data.height}
-                            width={data.width}
-                        />
-                    );
-                })}
-            </div>
-            <AlbumTitle title={data.album.name} />
-                {data.artists.map((data, key) => {
-                    return <p>{data.name}</p>;
-            })}
+        {data.map((value,key)=> {
+            return (
+                <div
+                    style={{
+                        display: "inline-flex",
+                        gap: 48,
+                        alignItems: "center",
+                        backgroundColor: "#2A2A2A",
+                        paddingRight: 16,
+                        borderRadius: 8,
+                        justifyContent:"space-between",
+                    }}
+                >
+                <div style={{display:"flex", gap:16,alignItems: "center",}}>
+                    <SongImage
+                        src={value.album.images[2].url}
+                        height={value.album.images.height}
+                        width={value.album.images.width}
+                        key={key}
+                    />
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                        <h5 style={{ color: "white", padding: 0, margin: 0 }}>
+                            {value.album.name}
+                        </h5>
+                        <p style={{ color: "white", padding: 0, margin: 0 }}>
+                            {value.artists[0].name}
+                        </p>
+                    </div>
+                </div>
+                    <button>Select</button>
+                </div>
+            );
+        })}
         </>
     );
 };
