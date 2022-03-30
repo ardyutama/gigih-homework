@@ -6,11 +6,12 @@ export default function Album({data}) {
     console.log(data);
     return (
         <>
-        {data.map((value,key)=> {
+        {data &&
+            data.map((value,key)=> {
             return (
                 <div
                     style={{
-                        display: "inline-flex",
+                        display: "flex",
                         gap: 48,
                         alignItems: "center",
                         backgroundColor: "#2A2A2A",
