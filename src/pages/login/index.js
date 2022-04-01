@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 
 
 export default function Login(params) {
-    var client_id = 'e9f0a28549d54a4ba83bb8759fc0b71a';
+    var client_id = process.env.REACT_APP_SPOTIFY_ID;
     var scope = 'playlist-modify-private';
     var redirect_uri = 'http://localhost:3000/callback';
+    
 
     const fetchLogin = () => {
         window.location = `https://accounts.spotify.com/authorize?response_type=token&client_id=${client_id}&scope=${scope}&redirect_uri=${redirect_uri}`;
