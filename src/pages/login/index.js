@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
-
-export default function Login(params) {
+export default function Login({login}) {
     var client_id = process.env.REACT_APP_SPOTIFY_ID;
     var scope = 'playlist-modify-private';
     var redirect_uri = 'http://localhost:3000/callback';
@@ -36,10 +35,11 @@ export default function Login(params) {
     // setData(access_token);
   })
     return (
-        <div>
-            <button type="button" onClick={fetchLogin}>
+        <>
+            {login ? "" :  <button type="button" onClick={fetchLogin} style={{ padding: 10 }}>
                 Login
-            </button>
-        </div>
+            </button>}
+           
+        </>
     )
 };
