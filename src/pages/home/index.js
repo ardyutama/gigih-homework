@@ -3,26 +3,28 @@ import { useEffect, useState } from "react";
 import SongImage from "../../component/SongImage";
 import SearchBar from "../../component/SearchBar"
 import FormPlaylist from "../../component/Form/Playlist";
+import { useSelector } from "react-redux";
 const Home = () => {
     const [search,setSearch]= useState('');
     const [token,setToken]= useState("");
     const [data,setData] = useState([]);
     const [selected, setSelected] = useState([]);
     const spotify_id = 'z0q91831v12amzt71gejgovjt';
+    const currentToken = useSelector((state)=> state.token.value);
 
-    useEffect(()=> {
-        setToken(localStorage.getItem('accessToken'))
-    },[]);
     const [form,setForm] = useState({
         name: '',
         description: '',
         collaborative : false,
         public: false,
     })
+
+    console.log(currentToken);
+
     const fetchData = async () => {
       axios.get(`https://api.spotify.com/v1/search`, {
           headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${currentToken}`,
           },
           params : {
             q: `${search}`,
@@ -37,6 +39,7 @@ const Home = () => {
           console.log(error);
         });
     };
+
     const createPlaylist = () => {
         axios.post(`https://api.spotify.com/v1/users/${spotify_id}/playlists`,
         form,
@@ -50,6 +53,7 @@ const Home = () => {
             addItems(res.data.id);
         })
     }
+    
     const addItems = (playlist_id) => {
         axios.post(`https://api.spotify.com/v1/playlists/${playlist_id}/tracks`,
         {"uris" : selected, "position" : 0},

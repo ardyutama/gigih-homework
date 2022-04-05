@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
+import { useDispatch} from "react-redux";
+import {token} from "../../store/token-slice"
 
 export default function Login({login}) {
     var client_id = process.env.REACT_APP_SPOTIFY_ID;
     var scope = 'playlist-modify-private';
     var redirect_uri = 'http://localhost:3000/callback';
-    
+
+    const dispatch = useDispatch();
 
     const fetchLogin = () => {
         window.location = `https://accounts.spotify.com/authorize?response_type=token&client_id=${client_id}&scope=${scope}&redirect_uri=${redirect_uri}`;
@@ -28,9 +31,7 @@ export default function Login({login}) {
                 token_type
             } = getAuthSpotify(window.location.hash);
         localStorage.clear();
-        localStorage.setItem('accessToken', access_token);
-        localStorage.setItem('expiresIn', expires_in);
-        localStorage.setItem('tokenType', token_type);
+        dispatch(token(access_token));
     }
     // setData(access_token);
   })
