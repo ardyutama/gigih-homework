@@ -2,25 +2,47 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import SongImage from "../../component/SongImage";
 import SearchBar from "../../component/SearchBar"
+import { useDispatch } from "react-redux";
 import FormPlaylist from "../../component/Form/Playlist";
+import { token } from "../../store/token-slice"
 import { useSelector } from "react-redux";
+
 const Home = () => {
     const [search,setSearch]= useState('');
-    const [token,setToken]= useState("");
     const [data,setData] = useState([]);
     const [selected, setSelected] = useState([]);
     const spotify_id = 'z0q91831v12amzt71gejgovjt';
     const currentToken = useSelector((state)=> state.token.value);
+    
+    const dispatch = useDispatch();
 
+    const getAuthSpotify = (hash) => {
+        const string = hash.substring(1);
+        const paramsInUrl = string.split('&');
+        const splitup = paramsInUrl.reduce((accumulator,currentValue)=> {
+            const [key,value] = currentValue.split('=');
+            console.log(value);
+            accumulator[key] = value;
+            return accumulator;
+        },{});
+        return splitup;
+    }
+
+    useEffect(()=> {
+        if(window.location.hash) {
+            const {
+                access_token,
+            } = getAuthSpotify(window.location.hash);
+        dispatch(token(access_token));
+    }
+  })
     const [form,setForm] = useState({
         name: '',
         description: '',
         collaborative : false,
         public: false,
     })
-
-    console.log(currentToken);
-
+    
     const fetchData = async () => {
       axios.get(`https://api.spotify.com/v1/search`, {
           headers: {
@@ -78,38 +100,32 @@ const Home = () => {
         localStorage.clear();
         window.location = 'http://localhost:3000'
     }
-  return (
-    <>
-      <div style={{display : "flex", flexDirection:"column",paddingTop: 48, paddingBottom: 48, gap:8}}>
-        <SearchBar onChange={(e)=> setSearch(e.target.value)} onClick={fetchData}/>
-        {selected.length > 0 && <FormPlaylist onChange={onChange} onSubmit={onSubmit}/>}
-          <div style={{ display : "flex", flexDirection:"column", gap:4, paddingTop:16 }}>
-            {data &&
-              data.map((value,key)=> {
-              return (
-                  <div style={{ backgroundColor: "#2A2A2A", paddingRight: 16, borderRadius:8}}>
-                    <div style={{display:"flex", gap:16,alignItems: "center",justifyContent:"space-between"}}>
-                        <SongImage
-                              src={value.album.images[2].url}
-                              height={value.album.images.height}
-                              width={value.album.images.width}
-                              albumName = {value.album.name}
-                              artist = {value.artists[0].name}
-                              isSelected = {selected.includes(value.uri)}
-                              selected = {()=> setSelected(oldData => [...oldData, value.uri])}
-                              key={key}
-                          />
-                      </div>
-                  </div>
-              );
-          })}
+      return (
+		<div className="flex justify-center items-center min-h-screen bg-gray-100">
+            <div style={{display : "flex", flexDirection:"column",paddingTop: 48, paddingBottom: 48, gap:8}}>
+              <SearchBar onChange={(e)=> setSearch(e.target.value)} onClick={fetchData}/>
+                  {selected.length > 0 && <FormPlaylist onChange={onChange} onSubmit={onSubmit}/>}
+						<div className="flex flex-col gap-4 pt-4">
+						{data &&
+							data.map((value,key)=> {
+							return (
+								<SongImage
+									src={value.album.images[2].url}
+									height={value.album.images.height}
+									width={value.album.images.width}
+									albumName = {value.album.name}
+									artist = {value.artists[0].name}
+									isSelected = {selected.includes(value.uri)}
+									selected = {()=> setSelected(oldData => [...oldData, value.uri])}
+									key={key}
+								/>
+							);
+						})}
+					</div>
+                  <button onClick={onLogout} className="bg-red-400 px-3 py-1 rounded block">Logout</button>
+            </div>
           </div>
-        <div>
-            <button onClick={onLogout}>Logout</button>
-        </div>
-      </div>
-    </>
-  );
+      );
 };
 
 export default Home;

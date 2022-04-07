@@ -1,46 +1,26 @@
-import { useEffect} from "react";
-import { useDispatch} from "react-redux";
-import {token} from "../../store/token-slice"
+import { useHistory } from "react-router-dom";
 
 export default function Login({login}) {
     var client_id = process.env.REACT_APP_SPOTIFY_ID;
     var scope = 'playlist-modify-private';
-    var redirect_uri = 'http://localhost:3000/callback';
-
-    const dispatch = useDispatch();
+    var redirect_uri = 'http://localhost:3000/create-playlist';
+    let history = useHistory();
 
     const fetchLogin = () => {
         window.location = `https://accounts.spotify.com/authorize?response_type=token&client_id=${client_id}&scope=${scope}&redirect_uri=${redirect_uri}`;
-      localStorage.setItem('isLogin',true);
+        localStorage.setItem('isLogin',true);
+        history.push('/create-playlist');
     };
-    const getAuthSpotify = (hash) => {
-        const string = hash.substring(1);
-        const paramsInUrl = string.split('&');
-        const splitup = paramsInUrl.reduce((accumulator,currentValue)=> {
-            const [key,value] = currentValue.split('=');
-            accumulator[key] = value;
-            return accumulator;
-        },{});
-        return splitup;
-    }
-    useEffect(()=> {
-        if(window.location.hash) {
-            const {
-                access_token,
-                expires_in,
-                token_type
-            } = getAuthSpotify(window.location.hash);
-        localStorage.clear();
-        dispatch(token(access_token));
-    }
-    // setData(access_token);
-  })
+
     return (
-        <>
-            {login ? "" :  <button type="button" onClick={fetchLogin} style={{ padding: 10 }}>
-                Login
-            </button>}
-           
-        </>
+        <div className="min-h-screen flex text-center items-center">
+            <div className="container mx-auto">
+                {login ? "" :  
+                    <button type="button" onClick={fetchLogin} className="px-3 py-2 bg-green-600 text-white rounded-md">
+                        Login
+                    </button>
+                }
+                </div>
+        </div>
     )
 };
