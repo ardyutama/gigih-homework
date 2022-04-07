@@ -24,7 +24,7 @@ export default function App() {
                             <Redirect exact from="/create-playlist" to="/" />
                         )}
                     </Route>
-                    <Route path="/">
+                    <Route exact path="/">
                     {isLogin ? (
                         <Redirect exact from="/" to="/create-playlist" />
                         ) : (
