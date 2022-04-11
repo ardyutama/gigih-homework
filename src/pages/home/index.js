@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import FormPlaylist from "../../component/Form/Playlist";
 import { token } from "../../store/token-slice"
 import { useSelector } from "react-redux";
+import { logout } from "../../store/auth-slice";
 
 const Home = () => {
     const [search,setSearch]= useState('');
@@ -13,7 +14,6 @@ const Home = () => {
     const [selected, setSelected] = useState([]);
     const spotify_id = 'z0q91831v12amzt71gejgovjt';
     const currentToken = useSelector((state)=> state.token.value);
-    
     const dispatch = useDispatch();
 
     const getAuthSpotify = (hash) => {
@@ -97,8 +97,8 @@ const Home = () => {
         createPlaylist();
     }
     const onLogout = () => {
-        localStorage.clear();
-        window.location = 'http://localhost:3000'
+        dispatch(logout());
+        // <Redirect to="/" />
     }
       return (
 		<div className="flex justify-center items-center min-h-screen bg-gray-100">

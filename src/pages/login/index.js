@@ -1,21 +1,21 @@
+import { useDispatch, useSelector} from "react-redux";
 import { useHistory } from "react-router-dom";
-
-export default function Login({login}) {
-    var client_id = process.env.REACT_APP_SPOTIFY_ID;
-    var scope = 'playlist-modify-private';
-    var redirect_uri = 'http://localhost:3000/create-playlist';
+import { loginUrl } from "../../utils/spotifyAuth";
+import { login } from "../../store/auth-slice";
+export default function Login() {
+    const dispatch = useDispatch();
     let history = useHistory();
-
+    const isLogin = useSelector(state => state.auth.isLogin)
     const fetchLogin = () => {
-        window.location = `https://accounts.spotify.com/authorize?response_type=token&client_id=${client_id}&scope=${scope}&redirect_uri=${redirect_uri}`;
-        localStorage.setItem('isLogin',true);
+        window.location.replace(loginUrl);
+        dispatch(login())
         history.push('/create-playlist');
     };
 
     return (
         <div className="min-h-screen flex text-center items-center">
             <div className="container mx-auto">
-                {login ? "" :  
+                {isLogin ? "" :  
                     <button type="button" onClick={fetchLogin} className="px-3 py-2 bg-green-600 text-white rounded-md">
                         Login
                     </button>
