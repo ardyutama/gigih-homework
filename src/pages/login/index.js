@@ -2,25 +2,48 @@ import { useDispatch, useSelector} from "react-redux";
 import { useHistory } from "react-router-dom";
 import { loginUrl } from "../../utils/spotifyAuth";
 import { login } from "../../store/auth-slice";
+import { token } from "../../store/token-slice"
+import { useEffect } from "react";
+import "../../styles.css"
+
 export default function Login() {
     const dispatch = useDispatch();
     let history = useHistory();
-    const isLogin = useSelector(state => state.auth.isLogin)
+    const isLogin = useSelector(state => state.auth.isLogin);
+
+    const getAuthSpotify = (hash) => {
+        const string = hash.substring(1);
+        const paramsInUrl = string.split('&');
+        const splitup = paramsInUrl.reduce((accumulator,currentValue)=> {
+            const [key,value] = currentValue.split('=');
+            accumulator[key] = value;
+            return accumulator;
+        },{});
+        return splitup;
+    }
+
+    useEffect(()=> {
+        if(window.location.hash) {
+            const {
+                access_token,
+            } = getAuthSpotify(window.location.hash);
+            dispatch(token(access_token));
+            dispatch(login())
+            history.push('/create-playlist');
+        }
+    },[history])
+    
     const fetchLogin = () => {
         window.location.replace(loginUrl);
-        dispatch(login())
-        history.push('/create-playlist');
     };
 
     return (
-        <div className="min-h-screen flex text-center items-center">
-            <div className="container mx-auto">
-                {isLogin ? "" :  
-                    <button type="button" onClick={fetchLogin} className="px-3 py-2 bg-green-600 text-white rounded-md">
-                        Login
-                    </button>
-                }
-                </div>
+        <div className="container">
+            {isLogin ? "" :  
+                <button type="button" onClick={fetchLogin} className="button-login">
+                    Login
+                </button>
+            }
         </div>
     )
 };

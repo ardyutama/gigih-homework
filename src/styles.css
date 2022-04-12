@@ -1,0 +1,113 @@
+.container {
+    min-height: 100vh;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    background-image: linear-gradient(to bottom, rgba(85, 85, 85, 1) , rgba(34, 34, 34, 1));
+}
+
+.button-login {
+    padding : 12px 24px;
+    background-color: #1ED760;
+    border-radius: 12px;
+    color: white;
+    justify-self: center;
+    border: none;
+    display: inline-block;
+    cursor: pointer;
+    font-size: 20px;
+}
+.container-content {
+    background-image: linear-gradient(to bottom, rgba(85, 85, 85, 1) , rgba(34, 34, 34, 1));
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 48px 64px;
+    margin: none;
+}
+
+.title {
+    font-size: 40px;
+    color: white;
+    margin: 0;
+}
+
+.searchbar {
+    display : inline-flex;
+    padding-top: 24px;
+    padding-bottom:24px;
+}
+
+.searchbar input[type=text]{
+    padding: 12px 12px;
+    border: none;
+    border-radius: 12px;
+    margin-right: 16px;
+}
+
+.searchbar button {
+    padding : 12px 24px;
+    background-color: #1ED760;
+    border-radius: 12px;
+    color: white;
+    justify-self: center;
+    border: none;
+    display: inline-block;
+    cursor: pointer;
+    font-size: 14px;
+}
+.song-container {
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 24px;
+    row-gap: 8px;
+
+}
+.song-wrapper {
+    border-width: 4px;
+    border-radius: 4px;
+    border-color: grey;
+    border-style: solid;
+    padding : 16px;
+    min-width: 400px;
+}
+
+.song-content {
+   display: flex;
+}
+
+.song-content img{
+    object-fit: cover;
+    width: 40%;
+}
+.song-action {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding-left: 16px;
+    gap: 16px
+}
+
+.song-action button {
+    padding : 12px 24px;
+    background-color: #1ED760;
+    border-radius: 12px;
+    color: white;
+    justify-self: center;
+    border: none;
+    display: inline-block;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.song-title{
+    display: flex;
+    flex-direction: column;
+    color: white;
+}
+
+.song-title h5,p {
+    margin: 0px;
+}
