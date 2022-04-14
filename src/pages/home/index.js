@@ -7,7 +7,6 @@ import FormPlaylist from "../../component/Form/Playlist";
 import { token } from "../../store/token-slice"
 import { useSelector } from "react-redux";
 import { logout } from "../../store/auth-slice";
-import "../../styles.css"
 const Home = () => {
     const [search,setSearch]= useState('');
     const [data,setData] = useState([]);
@@ -80,27 +79,27 @@ const Home = () => {
         dispatch(logout());
     }
       return (
-		<div className="container-content">
-            <h4 className="title">Playlist</h4>
+		<div className="px-12 py-8 bg-gradient-to-b from-slate-500 to-slate-700 min-h-screen">
+            <h4 className="text-4xl font-bold text-white">Playlist</h4>
               <SearchBar onChange={(e)=> setSearch(e.target.value)} onClick={fetchData}/>
                   {selected.length > 0 && <FormPlaylist onChange={onChange} onSubmit={onSubmit}/>}
-                    <div className="song-container">
-						{data && data.map((value,key)=> {
-							return (
-								<SongImage
-									src={value.album.images[1].url}
-									height={value.album.images.height}
-									width={value.album.images.width}
-									albumName = {value.album.name}
-									artist = {value.artists[0].name}
-									isSelected = {selected.includes(value.uri)}
-									selected = {()=> setSelected(oldData => [...oldData, value.uri])}
-									key={key}
-								/>
-							);
-						})}
+                    <div className="grid grid-cols-2 gap-6">
+                        {data && data.map((value,key)=> {
+                          return (
+                            <SongImage
+                              src={value.album.images[2].url}
+                              height={value.album.images.height}
+                              width={value.album.images.width}
+                              albumName = {value.album.name}
+                              artist = {value.artists[0].name}
+                              isSelected = {selected.includes(value.uri)}
+                              selected = {()=> setSelected(oldData => [...oldData, value.uri])}
+                              key={key}
+                            />
+                          );
+                        })}
                     </div>
-                  <button onClick={onLogout} className="bg-red-400 px-3 py-1 rounded block">Logout</button>
+                  <button onClick={onLogout} className="bg-red-400 px-3 py-1 rounded block mt-4 text-white font-medium">Logout</button>
             </div>
       );
 };

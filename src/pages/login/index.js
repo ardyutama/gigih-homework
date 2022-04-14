@@ -4,7 +4,6 @@ import { loginUrl } from "../../utils/spotifyAuth";
 import { login } from "../../store/auth-slice";
 import { token } from "../../store/token-slice"
 import { useEffect } from "react";
-import "../../styles.css"
 
 export default function Login() {
     const dispatch = useDispatch();
@@ -38,9 +37,9 @@ export default function Login() {
     };
 
     return (
-        <div className="container">
+        <div className="min-h-screen flex flex-col px-8 py-6 bg-gradient-to-b from-slate-500 to-slate-700 items-center justify-center">
             {isLogin ? "" :  
-                <button type="button" onClick={fetchLogin} className="button-login">
+                <button type="button" onClick={fetchLogin} className="px-6 py-3 bg-green-spotify text-white rounded-2xl font-bold text-xl inline-block">
                     Login
                 </button>
             }
