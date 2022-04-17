@@ -5,7 +5,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'green-spotify' : '#1ED760'
+        'green-spotify' : '#1ED760',
+        'grey-spotify' : '#555555',
+        'black-spotify' : '#222222',
       },
       fontFamily : {
         'sans' : ['Circular Std','sans-serif']
