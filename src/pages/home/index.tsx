@@ -12,6 +12,7 @@ import {ITrack} from "../../models/TrackResponse";
 import NavBar from "../../component/layout/Navbar";
 import PlaylistItem from "../../component/PlaylistItem"
 import { ISearch } from "../../models/searchResponse";
+import SearchAPI from "../../component/Fetch/getSearchAPI";
 const Home = () => {
     const [search,setSearch]= useState<string>('');
     const [data,setData] = useState(Array<ITrack>());
@@ -26,23 +27,24 @@ const Home = () => {
         collaborative : false,
         public: false,
     })
-    
+    console.log(selected); 
     const fetchData = async () => {
-      axios.get<ISearch>(`https://api.spotify.com/v1/search`, {
-          headers: {
-              Authorization: `Bearer ${currentToken}`,
-          },
-          params : {
-            q: `${search}`,
-            type: "track"
-          }
-        })
-        .then((response: any) => {
-          setData(response.data.tracks.items);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+        SearchAPI(search,currentToken);
+    //   axios.get<ISearch>(`https://api.spotify.com/v1/search`, {
+    //       headers: {
+    //           Authorization: `Bearer ${currentToken}`,
+    //       },
+    //       params : {
+    //         q: `${search}`,
+    //         type: "track"
+    //       }
+    //     })
+    //     .then((response: any) => {
+    //       setData(response.data.tracks.items);
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
     };
 
     const createPlaylist= async () => {
@@ -96,6 +98,7 @@ const Home = () => {
 										isSelected = {selected.includes(value.uri)}
 										selected = {isSelected => isSelected ? setSelected(oldData => oldData.filter(items => items !== value.uri)) : setSelected(oldData => [...oldData, value.uri])}
 										key={key}
+                                        data-testid="songImage"
 									/>
 								);
 							})}
