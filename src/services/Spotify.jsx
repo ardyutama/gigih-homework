@@ -11,7 +11,6 @@ const fetchSong = async (currentToken,search) => {
                 type: "track",
             },
         }).then((response)=>{
-            console.log(response.data.tracks.items)
             return response.data.tracks.items;
         })
         .catch((error) => {
@@ -31,7 +30,6 @@ const fetchPlaylist = async (spotify_id,currentToken) => {
             },
         )
         .then((response) => {
-            console.log(response.data.items);
             return (response.data.items);
         })
         .catch((error) => {
@@ -51,7 +49,6 @@ const createPlaylist = async (spotify_id,form,currentToken) => {
             },
         )
         .then((res) => {
-            console.log(res.data);
             addItems(res.data.id);
         });
 };

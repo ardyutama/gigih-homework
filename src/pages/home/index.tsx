@@ -58,7 +58,6 @@ const Home = () => {
                 },
             )
             .then((response: any) => {
-                console.log(response.data.items);
                 setPlaylist(response.data.items);
             })
             .catch((error) => {
@@ -78,7 +77,6 @@ const Home = () => {
                 },
             )
             .then((res) => {
-                console.log(res.data);
                 addItems(res.data.id);
             });
     };
@@ -95,9 +93,6 @@ const Home = () => {
                     },
                 },
             )
-            .then((res) => {
-                console.log(res.data);
-            });
     };
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;

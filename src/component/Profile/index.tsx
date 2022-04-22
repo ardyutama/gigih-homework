@@ -16,7 +16,6 @@ export default function Profile() {
       },
     })
       .then((response: any) => {
-        console.log(response.data)
         setData(response.data);
       })
       .catch((error) => {
