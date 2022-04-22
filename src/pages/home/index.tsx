@@ -13,13 +13,14 @@ import { useDisclosure } from "@chakra-ui/react";
 import ModalForm from "../../component/Modal";
 import PlaylistCarousel from "../../component/PlaylistSlider";
 import { fetchSong } from "../../services/Spotify";
+import { current } from "@reduxjs/toolkit";
 const Home = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [search, setSearch] = useState<string>("");
     const [data, setData] = useState(Array<ITrack>());
     const [playlist, setPlaylist] = useState([]);
     const [selected, setSelected] = useState(Array<string>());
-    const spotify_id = "z0q91831v12amzt71gejgovjt";
+    const user_id = useSelector((state:RootState)=> state.user.value);
     const currentToken = useSelector((state: RootState) => state.token.value);
     const initialRef = React.useRef();
     const [form, setForm] = useState({
@@ -28,6 +29,7 @@ const Home = () => {
         collaborative: false,
         public: false,
     });
+    console.log(user_id);
     // console.log(()=> fetchSong(currentToken,"tulus"));
     const fetchData = async () => {
         await axios
@@ -64,10 +66,10 @@ const Home = () => {
                 console.log(error);
             });
     };
-    const createPlaylist = async () => {
+    const createPlaylist = async (user_id:string) => {
         await axios
             .post(
-                `https://api.spotify.com/v1/users/${spotify_id}/playlists`,
+                `https://api.spotify.com/v1/users/${user_id}/playlists`,
                 form,
                 {
                     headers: {
@@ -100,12 +102,12 @@ const Home = () => {
     };
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        createPlaylist();
+        createPlaylist(user_id);
         onClose();
     };
     useEffect(() => {
-        fetchPlaylist(spotify_id);
-    }, []);
+        fetchPlaylist(user_id);
+    }, [user_id]);
 
     return (
         <div className='flex flex-col'>
@@ -116,7 +118,6 @@ const Home = () => {
                     <PlaylistCarousel data={playlist} />
                 </div>
                 <div className='flex justify-between'>
-                    
                     <SearchBar
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
                         onClick={fetchData}
