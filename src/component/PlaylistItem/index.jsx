@@ -1,19 +1,8 @@
-import SongImage from "../SongImage"
-
-export default function PlaylistItem({data,selected,setSelected}) {
+export default function PlaylistItem({ src, name }) {
     return (
-        <>
-        {data.map((value ,key) => {
-            return(
-                <SongImage
-                    src={value.album.images[0].url}
-                    albumName = {value.album.name}
-                    artist = {value.artists[0].name}
-                    isSelected = {selected.includes(value.uri)}
-                    selected = {isSelected => isSelected ? setSelected(oldData => oldData.filter(items => items !== value.uri)) : setSelected(oldData => [...oldData, value.uri])}
-                    key={key}
-                />
-        )})
-        }</>
-    )
+        <div className='inline-flex flex-col justify-center items-center'>
+            <img src={src} className='w-40 h-40' />
+            <p className='text-white font-medium text-xl pt-2'>{name}</p>
+        </div>
+    );
 }

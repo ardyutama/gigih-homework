@@ -1,9 +1,7 @@
-type Props = {
-    onChange: (e: React.ChangeEvent<HTMLInputElement>)=>void,
-    onClick: ()=>void,
-}
+import { AxiosResponse } from "axios";
 
-export default function index({onChange,onClick} : Props) {
+
+export default function index({onChange,onClick}) {
     return (
         <div className="flex pr-5 py-6">
             <input onChange={onChange} placeholder="Search Song" type="text" className="px-4 rounded-lg block focus:border-black-spotify focus: ring-1 focus:ring-black-spotify focus:outline-none"/>
