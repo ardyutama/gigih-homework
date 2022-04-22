@@ -6,5 +6,6 @@ export const loginUrl = `${authEndpoint}?
 client_id=${client_id}
 &redirect_uri=${redirect_uri}
 &scope=${scope}
-&response_type=token`;
+&response_type=token
+&show_dialog=true`;
 

@@ -4,7 +4,6 @@ import { loginUrl } from "../../utils/spotifyAuth";
 import { login } from "../../store/auth-slice";
 import { token } from "../../store/token-slice";
 import { useEffect } from "react";
-
 export default function Login() {
     const dispatch = useDispatch();
     let history = useHistory();
@@ -39,13 +38,16 @@ export default function Login() {
             {isLogin ? (
                 ""
             ) : (
-                <button
-                    type='button'
-                    onClick={fetchLogin}
-                    className='px-6 py-3 bg-green-spotify text-white rounded-2xl font-bold text-xl inline-block'
-                >
-                    Login
-                </button>
+                <>
+                    <img src='./login.svg' className="py-4"/>
+                    <button
+                        type='button'
+                        onClick={fetchLogin}
+                        className='px-6 py-3 bg-green-spotify text-white rounded-2xl font-bold text-xl inline-block'
+                    >
+                        Login
+                    </button>
+                </>
             )}
         </div>
     );
