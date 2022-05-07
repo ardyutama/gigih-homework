@@ -1,4 +1,3 @@
-import axios, { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
 import SongImage from "../../component/SongImage";
 import SearchBar from "../../component/SearchBar";
@@ -6,21 +5,24 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { ITrack } from "../../models/TrackResponse";
 import NavBar from "../../component/layout/Navbar";
-import { ISearch } from "../../models/searchResponse";
-import { IMePlaylistResponse } from "../../models/MePlaylistResponse";
+import PlaylistItem from "../../component/PlaylistItem";
+import { IAllPLaylist } from "../../models/AllPlaylistResponse";
 import Fab from "../../component/Fab";
 import { useDisclosure } from "@chakra-ui/react";
 import ModalForm from "../../component/Modal";
-import PlaylistCarousel from "../../component/PlaylistSlider";
-import { fetchSong } from "../../services/Spotify";
-import { current } from "@reduxjs/toolkit";
+import {
+    fetchSong,
+    fetchPlaylist,
+    createPlaylist,
+    addItems,
+} from "../../services/Spotify";
 const Home = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [search, setSearch] = useState<string>("");
-    const [data, setData] = useState(Array<ITrack>());
-    const [playlist, setPlaylist] = useState([]);
+    const [tracks, setTracks] = useState(Array<ITrack>());
+    const [playlist, setPlaylist] = useState(Array<IAllPLaylist>());
     const [selected, setSelected] = useState(Array<string>());
-    const user_id = useSelector((state:RootState)=> state.user.value);
+    const user_id = useSelector((state: RootState) => state.user.value);
     const currentToken = useSelector((state: RootState) => state.token.value);
     const initialRef = React.useRef();
     const [form, setForm] = useState({
@@ -29,72 +31,22 @@ const Home = () => {
         collaborative: false,
         public: false,
     });
-    console.log(user_id);
-    // console.log(()=> fetchSong(currentToken,"tulus"));
-    const fetchData = async () => {
-        await axios
-            .get<ISearch>(`https://api.spotify.com/v1/search`, {
-                headers: {
-                    Authorization: `Bearer ${currentToken}`,
-                },
-                params: {
-                    q: `${search}`,
-                    type: "track",
-                },
-            })
-            .then((response: any) => {
-                setData(response.data.tracks.items);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+    const handleTracks = async () => {
+        let res = await fetchSong(currentToken, search);
+        return setTracks(res?.data.tracks.items);
     };
-    const fetchPlaylist = async (spotify_id: string) => {
-        await axios
-            .get<IMePlaylistResponse>(
-                `https://api.spotify.com/v1/users/${spotify_id}/playlists`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${currentToken}`,
-                    },
-                },
-            )
-            .then((response: any) => {
-                setPlaylist(response.data.items);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+    const handlePlaylist = async () => {
+        let res = await fetchPlaylist(user_id, currentToken);
+        //@ts-ignores
+        return setPlaylist(res.data.items);
     };
-    const createPlaylist = async (user_id:string) => {
-        await axios
-            .post(
-                `https://api.spotify.com/v1/users/${user_id}/playlists`,
-                form,
-                {
-                    headers: {
-                        Authorization: `Bearer ${currentToken}`,
-                        "Content-Type": "application/json",
-                    },
-                },
-            )
-            .then((res) => {
-                addItems(res.data.id);
-            });
+    const handleCreatePlaylist = async () => {
+        let res = await createPlaylist(user_id, form, currentToken);
+        return handleAddItems(res?.data.id);
     };
 
-    const addItems = (playlist_id: string) => {
-        axios
-            .post(
-                `https://api.spotify.com/v1/playlists/${playlist_id}/tracks`,
-                { uris: selected, position: 0 },
-                {
-                    headers: {
-                        Authorization: `Bearer ${currentToken}`,
-                        "Content-Type": "application/json",
-                    },
-                },
-            )
+    const handleAddItems = (playlist_id: string) => {
+        return addItems(playlist_id, selected, currentToken);
     };
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
@@ -102,33 +54,45 @@ const Home = () => {
     };
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        createPlaylist(user_id);
+        handleCreatePlaylist();
         onClose();
     };
+
     useEffect(() => {
-        fetchPlaylist(user_id);
-    }, [user_id]);
+        handlePlaylist();
+    }, [handleAddItems]);
 
     return (
-        <div className='flex flex-col'>
+        <div className="flex flex-col">
             <NavBar />
-            <div className='px-12 py-8 bg-gradient-to-b from-grey-spotify to-black-spotify min-h-screen '>
-                <h4 className='text-4xl font-bold text-white'>Playlist</h4>
-                <div className='pt-4'>
-                    <PlaylistCarousel data={playlist} />
+            <div className="px-12 py-8 bg-gradient-to-b from-grey-spotify to-black-spotify min-h-screen ">
+                <h4 className="text-4xl font-bold text-white">Playlist</h4>
+                <div className="py-4 overflow-x-auto flex gap-4 items-start">
+                    {playlist.map((value, key) => {
+                        return (
+                            <PlaylistItem
+                                src={
+                                    value.images.length > 0
+                                        ? value.images[0].url
+                                        : "https://placekitten.com/200/300"
+                                }
+                                name={value.name}
+                                key={value.id}
+                            />
+                        );
+                    })}
                 </div>
-                <div className='flex justify-between'>
+                <div className="flex justify-between">
                     <SearchBar
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
-                        onClick={fetchData}
-                        //@ts-ignore
-                        // onClick={()=> setData(fetchSong(currentToken, search))}
-                            // setData(res.data.tracks.items);
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setSearch(e.target.value)
+                        }
+                        onClick={handleTracks}
                     />
                 </div>
-                <div className='grid grid-cols-2 gap-6'>
-                    {data &&
-                        data.map((value, key: number) => {
+                <div className="grid grid-cols-2 gap-6">
+                    {tracks &&
+                        tracks.map((value, key: number) => {
                             return (
                                 <SongImage
                                     src={value.album.images[0].url}
@@ -138,25 +102,17 @@ const Home = () => {
                                     selected={(isSelected) =>
                                         isSelected
                                             ? setSelected((oldData) =>
-                                                  oldData.filter(
-                                                      (items) =>
-                                                          items !== value.uri,
-                                                  ),
-                                              )
-                                            : setSelected((oldData) => [
-                                                  ...oldData,
-                                                  value.uri,
-                                              ])
+                                                oldData.filter((items) => items !== value.uri)
+                                            )
+                                            : setSelected((oldData) => [...oldData, value.uri])
                                     }
                                     key={key}
-                                    data-testid='songImage'
+                                    data-testid="songImage"
                                 />
                             );
                         })}
                 </div>
-                {selected.length > 0 && (
-                    <Fab isOpen={"true"} onClick={onOpen} />
-                )}
+                {selected.length > 0 && <Fab isOpen={"true"} onClick={onOpen} />}
             </div>
             <ModalForm
                 initialRef={initialRef}
